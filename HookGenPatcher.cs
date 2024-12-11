@@ -15,15 +15,12 @@ namespace BepInEx.MonoMod.HookGenPatcher
 
         private const string CONFIG_FILE_NAME = "HookGenPatcher.cfg";
 
-        private static readonly ConfigFile Config = new ConfigFile(Path.Combine(Paths.ConfigPath, CONFIG_FILE_NAME), true);
-
         private const char EntrySeparator = ',';
 
-        private static readonly ConfigEntry<string> AssemblyNamesToHookGenPatch = Config.Bind("General", "MMHOOKAssemblyNames",
-            "Assembly-CSharp.dll", $"Assembly names to make mmhooks for, separate entries with : {EntrySeparator} ");
+        private static readonly string AssemblyNamesToHookGenPatch = "Assembly-CSharp.dll";
 
-        private static readonly ConfigEntry<bool> preciseHash = Config.Bind<bool>("General", "Preciser filehashing", false, "Hash file using contents instead of size. Minor perfomance impact.");
-        private static bool skipHashing => !preciseHash.Value;
+        private static readonly bool preciseHash = true;
+        private static bool skipHashing => !preciseHash;
 
         public static IEnumerable<string> TargetDLLs { get; } = new string[] { };
 
@@ -31,9 +28,15 @@ namespace BepInEx.MonoMod.HookGenPatcher
          * Code largely based on https://github.com/MonoMod/MonoMod/blob/master/MonoMod.RuntimeDetour.HookGen/Program.cs
          */
 
+        /*
+         * i dont know how to patch il so i forked hookgenpatcher
+         * making il patcher by myself is probably better way but im too lazy
+         * im sure this will work cuz this thing is made by smart person,not like me
+         */
+
         public static void Initialize()
         {
-            var assemblyNames = AssemblyNamesToHookGenPatch.Value.Split(EntrySeparator);
+            var assemblyNames = AssemblyNamesToHookGenPatch.Split(EntrySeparator);
 
             var mmhookFolder = Path.Combine(Paths.PluginPath, "MMHOOK");
 
